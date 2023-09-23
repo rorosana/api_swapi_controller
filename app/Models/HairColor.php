@@ -9,6 +9,8 @@ class HairColor extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['nombre'];
+
      public function characters()
     {
         return $this->hasMany(Character::class, 'hair_id');

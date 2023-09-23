@@ -13,7 +13,7 @@ use App\Models\HairColor;
 class Characters extends Controller
 {
 
-    public function filter(Request $request)
+    /*public function filter(Request $request)
     //manage select function
     {
         $hairColor = $request->input('hair_color');
@@ -51,7 +51,7 @@ class Characters extends Controller
     }
 
     //
-    public function search(Request $request)
+    /*public function search(Request $request)
     {
         $searchText = $request->input('searchText');
 
@@ -69,5 +69,99 @@ class Characters extends Controller
         });
 
         return response()->json(['characters' => $filteredCharacters]);
+    }*/
+
+    /*public function search(Request $request)
+        {
+            // Obtiene la cadena ingresada por el usuario desde el formulario
+            $word = $request->input('search_words');
+
+            $url = "https://swapi.dev/api/people/?search=" . urlencode($word);
+            \Log::info("URL de la solicitud a SWAPI: " . $url);
+
+
+            // Realiza una solicitud a la API de SWAPI para obtener datos de personajes humanos
+            $client = new Client();
+            $response = $client->get('https://swapi.dev/api/species/1/');
+            $speciesData = json_decode($response->getBody(), true);
+
+            // Obtiene los URLs de los personajes humanos
+            $peopleUrls = $speciesData['people'];
+
+            // Inicializa un arreglo para almacenar los personajes que coinciden con la cadena de búsqueda
+            $matchingCharacters = [];
+
+            // Itera a través de los URLs de los personajes y filtra por la cadena de búsqueda
+            foreach ($peopleUrls as $personUrl) {
+                $personResponse = $client->get($personUrl);
+                $personData = json_decode($personResponse->getBody(), true);
+
+                // Verifica si la cadena de búsqueda coincide con el color de pelo o piel
+                if (
+                    strpos(strtolower($personData['hair_color']), strtolower($word)) !== false ||
+                    strpos(strtolower($personData['skin_color']), strtolower($word)) !== false
+                ) {
+                    $matchingCharacters[] = $personData['name'];
+                }
+            }
+
+            // Devuelve los personajes coincidentes como HTML
+            $resultHtml = '';
+            foreach ($matchingCharacters as $character) {
+                $resultHtml .= "<tr><td>$character</td></tr>";
+            }
+
+            return $resultHtml;
+        }*/
+
+        public function search(Request $request)
+{
+    // Obtiene la cadena ingresada por el usuario desde el formulario
+    $searchWords = $request->input('search_words');
+    //dd($request->all());
+
+    // Divide la cadena en dos palabras: color de pelo y color de piel
+    $searchWordsArray = explode(' ', $searchWords);
+
+    // Verifica si se proporcionaron ambas palabras
+    if (count($searchWordsArray) < 2) {
+        return response()->json(['error' => 'Debes proporcionar tanto el color de pelo como el color de piel.']);
     }
+
+    $hairColor = $searchWordsArray[0];
+    $skinColor = $searchWordsArray[1];
+
+    // Realiza una solicitud a la API de SWAPI para obtener datos de personajes humanos
+    $client = new Client();
+    $response = $client->get('https://swapi.dev/api/species/1/');
+    $speciesData = json_decode($response->getBody(), true);
+
+    // Obtiene los URLs de los personajes humanos
+    $peopleUrls = $speciesData['people'];
+
+    // Inicializa un arreglo para almacenar los personajes que coinciden con los criterios de búsqueda
+    $matchingCharacters = [];
+
+    // Itera a través de los URLs de los personajes y filtra por el color de pelo y piel
+    foreach ($peopleUrls as $personUrl) {
+        $personResponse = $client->get($personUrl);
+        $personData = json_decode($personResponse->getBody(), true);
+
+        // Verifica si el color de pelo y piel coinciden con los criterios de búsqueda
+        if (
+            strpos(strtolower($personData['hair_color']), strtolower($hairColor)) !== false &&
+            strpos(strtolower($personData['skin_color']), strtolower($skinColor)) !== false
+        ) {
+            $matchingCharacters[] = $personData['name'];
+        }
+    }
+
+    // Devuelve los personajes coincidentes como JSON
+    return response()->json(['characters' => $matchingCharacters]);
+
+
+}
+
+
+
 }

@@ -39,52 +39,104 @@
     <h1 class="text-center">Human Finder</h1>
     <div class="card mb-4">
         <div class="card-body">
-            <div class="row mb-4">
-                <div class="col-md-8 col-sm-12">
-                    <input class="form-control" id="name" aria-describedby="name" placeholder="Search by random string">
-                </div>
-                <div class="col-md-4 col-sm-12">
-                    <button id="search-button" type="button" class="btn btn-outline-primary">SEARCH</button>
-                </div>
-            </div>
+            <form method="POST" action="{{ route('search') }}">
+    @csrf
+    <div class="row mb-4">
+        <div class="col-md-8 col-sm-12">
+            <input class="form-control" id="search-term" name="search_term" aria-describedby="name" placeholder="Search by random string">
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <button type="submit" class="btn btn-outline-primary">SEARCH</button>
+        </div>
+    </div>
+</form>
+
             <div class="row">
                 <div class="col-md-4 col-sm-6">
                     <select id="hair-color-select" class="form-select" aria-label="Hair color selector">
                         <option selected>Select hair color</option>
+                        @foreach ($hairColors as $hairColor)
+                            <option value="{{ $hairColor }}">{{ $hairColor }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-4 col-sm-6">
                     <select id="skin-color-select" class="form-select" aria-label="Skin color selector">
                         <option selected>Select skin color</option>
+                        @foreach ($skinColors as $skinColor)
+                            <option value="{{ $skinColor }}">{{ $skinColor }}</option>
+                        @endforeach
                     </select>
                 </div>
+
                 <div class="col-md-4 col-sm-12">
                     <button id="apply-filters-button" type="button" class="btn btn-outline-primary">APPLY FILTERS</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="card mb-4">
-        <div class="card-body">
-            <table class="table">
-                <thead>
+    <div class="card mb-4" id="characters-table">
+    <div class="card-body">
+        <table class="table">
+            <thead>
                 <tr>
                     <th>Name</th>
                     <th>Details</th>
                 </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+            </thead>
+            <tbody>
+    @foreach ($characters as $character)
+        <tr>
+            <td>{{ $character->nombre }}</td>
+            <td>{{ $character->height }} - {{ $character->mass }}</td>
+        </tr>
+    @endforeach
+</tbody>
+
+        </table>
     </div>
+</div>
     <a href="{{ url('/') }}">Enunciado</a>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <!-- Script -->
     <script type='text/javascript'>
-    $(document).ready(function() {
+    $(document).ready(function () {
+    $('#search-form').submit(function (e) {
+        e.preventDefault(); // Evita que el formulario se envíe de forma predeterminada
+
+        var searchTerm = $('#search-term').val(); // Obtiene el término de búsqueda del usuario
+
+        // Realiza una solicitud AJAX al servidor para buscar personajes
+        $.ajax({
+            type: 'POST',
+            url: '{{ route('search') }}',
+            data: { '_token': '{{ csrf_token() }}', 'search_term': searchTerm },
+            success: function (data) {
+                console.log(data);
+                // Selecciona la tabla de resultados
+                var $resultsTable = $('#characters-table tbody');
+
+                // Borra el contenido de la tabla actual
+                $resultsTable.empty();
+
+                // Itera sobre los resultados y agrega filas a la tabla
+                $.each(data, function (index, character) {
+                    var row = '<tr><td>' + character.nombre + '</td><td>' + character.details + '</td></tr>';
+                    $resultsTable.append(row);
+                });
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    });
+});
+
+
+
+
+    /*$(document).ready(function() {
     csrfToken = $('meta[name="csrf-token"]').attr('content');
     $('#search-button').click(function() {
         var selectedHairColor = $('#hair-color-select').val();
@@ -119,11 +171,34 @@
             }
         });
     });
-});
+});*/
 
     // fill select options
-    $(document).ready(function() {
-      $.ajax({
+    /*$(document).ready(function() {
+        csrfToken = $('meta[name="csrf-token"]').attr('content');
+        $('#search-button').click(function () {
+            var searchTerm = $('#search-term').val();
+            var searchWords = searchTerm.split(' ');
+
+
+            $.ajax({
+                url: '/search', // La URL de tu ruta para la búsqueda
+                type: 'GET',
+                data: { search_words: searchWords.toString() },
+                success: function (data) {
+                    // Manejar la respuesta del controlador aquí, por ejemplo, actualizar la tabla de resultados
+                    $('.table tbody').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+
+            });
+
+            //console.log("URL de la solicitud: /search?search_term=" + url); // Agrega esta línea
+        });
+    });*/
+      /*$.ajax({
         url: 'https://swapi.dev/api/species/1/',
         method: 'GET',
         success: function (data) {
@@ -203,11 +278,11 @@
             tableBody.append(row);
         });
     });
-});
+});*/
 
 
 
-});
+
     </script>
 </div>
 </body>

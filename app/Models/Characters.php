@@ -9,6 +9,8 @@ class Characters extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['nombre'];
+
      public function skinColor()
     {
         return $this->belongsTo(SkinColor::class, 'skin_id');

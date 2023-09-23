@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Characters;
+use App\Http\Controllers\SWAPIController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +38,11 @@ Route::get('/', function () {
     }
 });*/
 
-Route::post('/filter', [Characters::class, 'filter']);
-Route::post('/search', [Characters::class, 'search'])->name('search');
+//Route::post('/filter', [Characters::class, 'filter']);
+//Route::post('/search', [Characters::class, 'search'])->name('search');
+
+//Route::get('/search', [Characters::class, 'search']);
+Route::get('/fetch-and-store-characters', [SWAPIController::class, 'fetchAndStoreCharacters']);
+Route::post('/search', [SWAPIController::class, 'search'])->name('search');
 
 
