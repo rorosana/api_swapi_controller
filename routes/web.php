@@ -16,9 +16,7 @@ use App\Http\Controllers\SWAPIController;
 |
 */
 
-Route::get('/', function () {
-    return view('characters_finder');
-});
+//Route::get('/', function () {return view('characters_finder');});
 
 /*Route::get('/', function () {
     $response = Http::get('https://swapi.dev/api/species/1/');
@@ -38,11 +36,11 @@ Route::get('/', function () {
     }
 });*/
 
-//Route::post('/filter', [Characters::class, 'filter']);
-//Route::post('/search', [Characters::class, 'search'])->name('search');
-
-//Route::get('/search', [Characters::class, 'search']);
-Route::get('/fetch-and-store-characters', [SWAPIController::class, 'fetchAndStoreCharacters']);
+Route::get('/fetchandstorecharacters', [SWAPIController::class, 'fetchAndStoreCharacters']);
 Route::post('/search', [SWAPIController::class, 'search'])->name('search');
+Route::post('/searchWithFilters', [SWAPIController::class, 'searchWithFilters'])->name('searchWithFilters');
+Route::get('/get-colors', [SWAPIController::class, 'getColors'])->name('getColors');
+Route::get('/', [SWAPIController::class, 'index'])->name('home');
+Route::get('/refresh-cache', [SWAPIController::class, 'refreshCache'])->name('refreshCache');
 
 

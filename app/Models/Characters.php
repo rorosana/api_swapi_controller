@@ -9,7 +9,7 @@ class Characters extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre', 'height', 'mass', 'eye_color', 'birth_year', 'gender'];
 
      public function skinColor()
     {

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <!-- Required meta tags -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -7,101 +8,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS & JQUERY-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    <title>Character Finder</title>
+    <!--FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Styles -->
-    <style>
-        html, body {
-            background-color: #fff;
-            color: #636b6f;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 200;
-            height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            margin: 1em 0;
-            font-size: 1.3em;
-        }
-        @media (max-width: 768px) {
-            .col-sm-12 {
-                margin-top: 1em;
-            }
-        }
-    </style>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ asset('../../css/styles.css') }}">
+
+    <title>Character Finder</title>
 </head>
 
 <body>
-<div class="container-fluid">
-    <h1 class="text-center">Human Finder</h1>
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="POST" action="{{ route('search') }}">
-    @csrf
-    <div class="row mb-4">
-        <div class="col-md-8 col-sm-12">
-            <input class="form-control" id="search-term" name="search_term" aria-describedby="name" placeholder="Search by random string">
+    <nav class="navbar">
+        <span class="navbar-text">pedagoo</span>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 d-flex align-items-center justify-content-start">
+                <a href="{{ url('/') }}" class="custom-link">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+            <div class="col-md-8 d-flex align-items-center justify-content-center">
+                <h1 class="text-center">Human Finder</h1>
+            </div>
         </div>
-        <div class="col-md-4 col-sm-12">
-            <button type="submit" class="btn btn-outline-primary">SEARCH</button>
-        </div>
-    </div>
-</form>
-
-            <div class="row">
-                <div class="col-md-4 col-sm-6">
-                    <select id="hair-color-select" class="form-select" aria-label="Hair color selector">
-                        <option selected>Select hair color</option>
-                        @foreach ($hairColors as $hairColor)
-                            <option value="{{ $hairColor }}">{{ $hairColor }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <select id="skin-color-select" class="form-select" aria-label="Skin color selector">
-                        <option selected>Select skin color</option>
-                        @foreach ($skinColors as $skinColor)
-                            <option value="{{ $skinColor }}">{{ $skinColor }}</option>
-                        @endforeach
-                    </select>
+        <div class="card mb-4">
+            <div class="row align-items-center mt-4">
+                <div class="col">
+                    <p class="text-muted text-with-margin mb-0">Refresh the cache to load data from swapi.com</p>
+                    <a href="{{ route('refreshCache') }}" class="custom-link ">Refresh Caché</a>
                 </div>
 
-                <div class="col-md-4 col-sm-12">
-                    <button id="apply-filters-button" type="button" class="btn btn-outline-primary">APPLY FILTERS</button>
+            </div>
+
+            <div class="card-body">
+                <form method="POST" action="{{ route('search') }}">
+                    @csrf
+                    <div class="row mb-4">
+                        <div class="col-md-8 col-sm-12">
+                            <div class="input-group">
+                                <input class="form-control form-control-icon" id="search-term" name="search_term"
+                                    aria-describedby="name" placeholder="Search by random string">
+                                <i class="fas fa-search fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <button type="submit" class="btn text-primary">SEARCH</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <select id="hair-color-select" class="form-select" aria-label="Hair color selector"
+                            name="hair_color">
+                            <option selected>Select hair color</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <select id="skin-color-select" class="form-select" aria-label="Skin color selector"
+                            name="skin_color">
+                            <option selected>Select skin color</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <button id="apply-filters-button" type="button" class="btn btn-outline-primary">APPLY
+                            FILTERS</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="card mb-4" id="characters-table">
-    <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody>
-    @foreach ($characters as $character)
-        <tr>
-            <td>{{ $character->nombre }}</td>
-            <td>{{ $character->height }} - {{ $character->mass }}</td>
-        </tr>
-    @endforeach
-</tbody>
+        <div class="card mb-4" id="characters-table">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{-- Comentario Blade --}}
+                        @foreach ($characters as $character)
+                        <tr>
+                            <td>{{ $character->nombre }}</td>
+                            <td>
+                                <span class="character-details-icon" data-character="{{ json_encode($character) }}"><i
+                                        class="fa-solid fa-user"></i></span>
+                            </td>
+                            {{-- Comentario Blade --}}
+                            {{-- <td>
+                                {{ dd($character) }}
+                            </td>--}}
+                        </tr>
+                        @endforeach
+                    </tbody>
 
-        </table>
+                </table>
+            </div>
+        </div>
     </div>
-</div>
-    <a href="{{ url('/') }}">Enunciado</a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script>
     <!-- Script -->
     <script type='text/javascript'>
-    $(document).ready(function () {
+        $(document).ready(function () {
     $('#search-form').submit(function (e) {
         e.preventDefault(); // Evita que el formulario se envíe de forma predeterminada
 
@@ -132,158 +153,152 @@
         });
     });
 });
+    </script>
 
+    <script type='text/javascript'>
+        $(document).ready(function () {
+    // Realiza una solicitud AJAX para obtener los colores de pelo y piel cuando se carga la página
+    $.ajax({
+        type: 'GET',
+        url: '{{ route('getColors') }}',
+        success: function (data) {
+            var hairColors = data.hairColors;
+            var skinColors = data.skinColors;
 
+            // Llena los selects con los colores obtenidos
+            var hairColorSelect = $('#hair-color-select');
+            var skinColorSelect = $('#skin-color-select');
 
+            hairColorSelect.empty();
+            skinColorSelect.empty();
 
-    /*$(document).ready(function() {
-    csrfToken = $('meta[name="csrf-token"]').attr('content');
-    $('#search-button').click(function() {
-        var selectedHairColor = $('#hair-color-select').val();
-        var selectedSkinColor = $('#skin-color-select').val();
-        var searchText = $('#name').val();
+            hairColorSelect.append($('<option>', {
+                value: 'Select hair color',
+                text: 'Select hair color'
+            }));
 
+            skinColorSelect.append($('<option>', {
+                value: 'Select skin color',
+                text: 'Select skin color'
+            }));
 
+            $.each(hairColors, function (index, color) {
+                hairColorSelect.append($('<option>', {
+                    value: color,
+                    text: color
+                }));
+            });
+
+            $.each(skinColors, function (index, color) {
+                skinColorSelect.append($('<option>', {
+                    value: color,
+                    text: color
+                }));
+            });
+        },
+        error: function (error) {
+            console.error(error);
+        }
+    });
+
+    // Resto del código...
+});
+    </script>
+
+    <script type='text/javascript'>
+        $(document).ready(function () {
+    // Maneja la búsqueda con filtros cuando se hace clic en el botón "APPLY FILTERS"
+    $('#apply-filters-button').click(function () {
+        var hairColor = $('#hair-color-select').val();
+        var skinColor = $('#skin-color-select').val();
+
+        // Realiza una solicitud AJAX al servidor para buscar personajes con filtros
         $.ajax({
-            url: '/search',
-            method: 'POST',
+            type: 'POST',
+            url: '{{ route('searchWithFilters') }}',
             data: {
-                _token: csrfToken,
-                hair_color: selectedHairColor,
-                skin_color: selectedSkinColor,
-                searchText: searchText
+                '_token': '{{ csrf_token() }}',
+                'search_term': '',
+                'hair_color': hairColor,
+                'skin_color': skinColor
             },
-            success: function(response) {
+            success: function (data) {
+                console.log(data);
+                // Selecciona la tabla de resultados
+                var $resultsTable = $('#characters-table tbody');
 
-                var tableBody = $('.table tbody');
-                tableBody.empty();
+                // Borra el contenido de la tabla actual
+                $resultsTable.empty();
 
-                $.each(response.characters, function(index, character) {
-                    var row = '<tr>';
-                    row += '<td>' + character.name + '</td>';
-                    row += '<td><a href="' + character.url + '">Details</a></td>';
-                    row += '</tr>';
-                    tableBody.append(row);
+                // Itera sobre los resultados y agrega filas a la tabla
+                $.each(data, function (index, character) {
+                    var row = '<tr><td>' + character.nombre + '</td><td>' + character.details + '</td></tr>';
+                    $resultsTable.append(row);
                 });
             },
-            error: function() {
-                alert('Error al filtrar los datos');
+            error: function (error) {
+                console.error(error);
             }
         });
     });
-});*/
-
-    // fill select options
-    /*$(document).ready(function() {
-        csrfToken = $('meta[name="csrf-token"]').attr('content');
-        $('#search-button').click(function () {
-            var searchTerm = $('#search-term').val();
-            var searchWords = searchTerm.split(' ');
-
-
-            $.ajax({
-                url: '/search', // La URL de tu ruta para la búsqueda
-                type: 'GET',
-                data: { search_words: searchWords.toString() },
-                success: function (data) {
-                    // Manejar la respuesta del controlador aquí, por ejemplo, actualizar la tabla de resultados
-                    $('.table tbody').html(data);
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-
-            });
-
-            //console.log("URL de la solicitud: /search?search_term=" + url); // Agrega esta línea
-        });
-    });*/
-      /*$.ajax({
-        url: 'https://swapi.dev/api/species/1/',
-        method: 'GET',
-        success: function (data) {
-            var hairColors = data.hair_colors.split(',').map(function(color) {
-                return color.trim();
-            });
-
-            var hairColorSelect = document.getElementById('hair-color-select');
-            for (var i = 0; i < hairColors.length; i++) {
-                var option = document.createElement('option');
-                option.text = hairColors[i];
-                hairColorSelect.appendChild(option);
-            }
-
-
-            var skinColors = data.skin_colors.split(',').map(function(color) {
-                return color.trim();
-            });
-
-
-            var skinColorSelect = document.getElementById('skin-color-select');
-            for (var i = 0; i < skinColors.length; i++) {
-                var option = document.createElement('option');
-                option.text = skinColors[i];
-                skinColorSelect.appendChild(option);
-            }
-        },
-        error: function () {
-            alert('Error al obtener datos de la especie humana');
-        }
-    });
-    //data to filter function
-    $(document).ready(function() {
-    $('#apply-filters-button').click(function() {
-        var selectedHairColor = $('#hair-color-select').val();
-        var selectedSkinColor = $('#skin-color-select').val();
-
-
-        var hairColorCharacterNames = {
-            "brown": ["Dormé"],
-            "white": ["Dooku"],
-            "black": ["Bail Prestor Organa", "Jango Fett"],
-        };
-
-        var skinColorCharacterNames = {
-            "hispanic": ["Dormé"],
-            "caucasian": ["Dooku"],
-            "asian": ["Bail Prestor Organa", "Jango Fett"]
-        };
-
-        // Filtrar personajes por color de pelo
-        var filteredByHairColor = [];
-        if (selectedHairColor && hairColorCharacterNames[selectedHairColor]) {
-            filteredByHairColor = hairColorCharacterNames[selectedHairColor];
-        }
-
-
-        var filteredCharacters = [];
-        if (selectedSkinColor && skinColorCharacterNames[selectedSkinColor]) {
-            var charactersToCheck = selectedSkinColor === 'all' ? filteredByHairColor : filteredCharacters;
-            filteredCharacters = charactersToCheck.filter(function(character) {
-                return skinColorCharacterNames[selectedSkinColor].includes(character);
-            });
-        } else {
-            filteredCharacters = filteredByHairColor;
-        }
-
-        // Actualizar la tabla con los resultados filtrados
-        var tableBody = $('.table tbody');
-        tableBody.empty();
-
-        $.each(filteredCharacters, function(index, characterName) {
-            var row = '<tr>';
-            row += '<td>' + characterName + '</td>';
-            row += '<td><a href="#">Details</a></td>';
-            row += '</tr>';
-            tableBody.append(row);
-        });
-    });
-});*/
-
-
-
-
+});
     </script>
-</div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+        // Mostrar el popup al hacer clic en el ícono
+        $('.character-details-icon').click(function () {
+            console.log("Clicked!");
+            //var characterData = JSON.parse($(this).data('character'));
+            var characterData = $(this).data('character');
+
+            console.log($(this).data('character'));
+            var popupContent = `
+                <strong>Name:</strong> ${characterData.nombre}<br>
+                <strong>Height:</strong> ${characterData.height}<br>
+                <strong>Mass:</strong> ${characterData.mass}<br>
+                <strong>Hair Color:</strong> ${characterData.hair_color}<br>
+                <strong>Skin Color:</strong> ${characterData.skin_color}<br>
+                <strong>Eye Color:</strong> ${characterData.eye_color}<br>
+                <strong>Birth Year:</strong> ${characterData.birth_year}<br>
+                <strong>Gender:</strong> ${characterData.gender}<br>
+            `;
+
+            console.log(characterData)
+
+            // Crea el popup y muestra los detalles
+            var popup = $('<div class="character-details-popup">' + popupContent + '</div>');
+            $(this).after(popup);
+
+            // Posiciona el popup junto al ícono
+            var iconPosition = $(this).position();
+            popup.css({
+                top: iconPosition.top + $(this).outerHeight(),
+                left: iconPosition.left
+            });
+
+            // Muestra el popup
+            popup.show();
+
+            // Cierra el popup al hacer clic en cualquier otro lugar de la página
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.character-details-popup').length && !$(e.target).closest('.character-details-icon').length) {
+                    $('.character-details-popup').remove();
+                }
+            });
+        });
+    });
+    </script>
+
+    {{-- Agrega este código en la vista para depurar --}}
+    @if(isset($characters))
+    @php
+    dd($characters);
+    @endphp
+    @endif
+
+
+    </div>
 </body>
+
 </html>
