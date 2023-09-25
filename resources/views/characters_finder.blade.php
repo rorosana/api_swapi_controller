@@ -38,7 +38,7 @@
                 <h1 class="text-center">Human Finder</h1>
             </div>
         </div>
-        <div class="card mb-4">
+        <div class="card mb-3">
             <div class="row align-items-center mt-4">
                 <div class="col">
                     <p class="text-muted text-with-margin mb-0">Refresh the cache to load data from swapi.com</p>
@@ -47,44 +47,47 @@
 
             </div>
 
-            <div class="card-body">
+            <div class="card-body ">
                 <form method="POST" action="{{ route('search') }}">
                     @csrf
                     <div class="row mb-4">
-                        <div class="col-md-8 col-sm-12">
+                        <div class="col-md-10 col-sm-12">
                             <div class="input-group">
                                 <input class="form-control form-control-icon" id="search-term" name="search_term"
                                     aria-describedby="name" placeholder="Search by random string">
                                 <i class="fas fa-search fa-lg"></i>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-12">
-                            <button type="submit" class="btn text-primary">SEARCH</button>
+                        <div class="col-md-1">
+                            <button type="submit" class="custom-button">SEARCH</button>
                         </div>
                     </div>
                 </form>
 
                 <div class="row">
-                    <div class="col-md-4 col-sm-6">
-                        <select id="hair-color-select" class="form-select" aria-label="Hair color selector"
-                            name="hair_color">
+                    <div class="col-md-5 col-sm-6 mb-3 ">
+                        <select id="hair-color-select" class="form-select custom-select-height"
+                            aria-label="Hair color selector" name="hair_color">
                             <option selected>Select hair color</option>
                         </select>
                     </div>
-                    <div class="col-md-4 col-sm-6">
-                        <select id="skin-color-select" class="form-select" aria-label="Skin color selector"
-                            name="skin_color">
+                    <div class="col-md-5 col-sm-6">
+                        <select id="skin-color-select" class="form-select custom-select-height"
+                            aria-label="Skin color selector" name="skin_color">
                             <option selected>Select skin color</option>
                         </select>
                     </div>
 
-                    <div class="col-md-4 col-sm-12">
-                        <button id="apply-filters-button" type="button" class="btn btn-outline-primary">APPLY
+                    <div class="col-md-2 col-sm-12 ml-n4">
+                        <button id="apply-filters-button" type="button" class="custom-button">APPLY
                             FILTERS</button>
                     </div>
                 </div>
             </div>
         </div>
+
+
+
         <div class="card mb-4" id="characters-table">
             <div class="card-body">
                 <table class="table">
@@ -120,28 +123,37 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
     </script>
-    <!-- Script -->
+    <!-- Script SEARCH-->
     <script type='text/javascript'>
         $(document).ready(function () {
     $('#search-form').submit(function (e) {
-        e.preventDefault(); // Evita que el formulario se envíe de forma predeterminada
+        e.preventDefault();
 
-        var searchTerm = $('#search-term').val(); // Obtiene el término de búsqueda del usuario
+        var searchTerm = $('#search-term').val();
 
-        // Realiza una solicitud AJAX al servidor para buscar personajes
         $.ajax({
             type: 'POST',
             url: '{{ route('search') }}',
             data: { '_token': '{{ csrf_token() }}', 'search_term': searchTerm },
             success: function (data) {
                 console.log(data);
-                // Selecciona la tabla de resultados
                 var $resultsTable = $('#characters-table tbody');
+                var $noResultsMessage = $('#no-results-message');
 
-                // Borra el contenido de la tabla actual
                 $resultsTable.empty();
 
-                // Itera sobre los resultados y agrega filas a la tabla
+                if (data.length === 0) {
+
+                    $('#no-results-message').show();
+                    $('table').hide();
+                } else {
+
+                    $('#no-results-message').hide();
+                    $('table').show();
+                }
+
+
+
                 $.each(data, function (index, character) {
                     var row = '<tr><td>' + character.nombre + '</td><td>' + character.details + '</td></tr>';
                     $resultsTable.append(row);
@@ -155,9 +167,10 @@
 });
     </script>
 
+
+    <!-- Script FILL SELECT OPTIONS -->
     <script type='text/javascript'>
         $(document).ready(function () {
-    // Realiza una solicitud AJAX para obtener los colores de pelo y piel cuando se carga la página
     $.ajax({
         type: 'GET',
         url: '{{ route('getColors') }}',
@@ -165,7 +178,6 @@
             var hairColors = data.hairColors;
             var skinColors = data.skinColors;
 
-            // Llena los selects con los colores obtenidos
             var hairColorSelect = $('#hair-color-select');
             var skinColorSelect = $('#skin-color-select');
 
@@ -201,18 +213,16 @@
         }
     });
 
-    // Resto del código...
 });
     </script>
 
+    <!-- Script APPLY FILTERS -->
     <script type='text/javascript'>
         $(document).ready(function () {
-    // Maneja la búsqueda con filtros cuando se hace clic en el botón "APPLY FILTERS"
     $('#apply-filters-button').click(function () {
         var hairColor = $('#hair-color-select').val();
         var skinColor = $('#skin-color-select').val();
 
-        // Realiza una solicitud AJAX al servidor para buscar personajes con filtros
         $.ajax({
             type: 'POST',
             url: '{{ route('searchWithFilters') }}',
@@ -224,13 +234,10 @@
             },
             success: function (data) {
                 console.log(data);
-                // Selecciona la tabla de resultados
                 var $resultsTable = $('#characters-table tbody');
 
-                // Borra el contenido de la tabla actual
                 $resultsTable.empty();
 
-                // Itera sobre los resultados y agrega filas a la tabla
                 $.each(data, function (index, character) {
                     var row = '<tr><td>' + character.nombre + '</td><td>' + character.details + '</td></tr>';
                     $resultsTable.append(row);
@@ -244,6 +251,7 @@
 });
     </script>
 
+    <!-- Script POPUP -->
     <script type="text/javascript">
         $(document).ready(function () {
         // Mostrar el popup al hacer clic en el ícono
@@ -270,7 +278,7 @@
             var popup = $('<div class="character-details-popup">' + popupContent + '</div>');
             $(this).after(popup);
 
-            // Posiciona el popup junto al ícono
+            // Posiciona el popup junto al icono
             var iconPosition = $(this).position();
             popup.css({
                 top: iconPosition.top + $(this).outerHeight(),
@@ -290,12 +298,12 @@
     });
     </script>
 
-    {{-- Agrega este código en la vista para depurar --}}
-    @if(isset($characters))
+    {{--  para depurar --}}
+    {{--@if(isset($characters))
     @php
     dd($characters);
     @endphp
-    @endif
+    @endif--}}
 
 
     </div>

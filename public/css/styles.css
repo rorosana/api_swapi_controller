@@ -52,6 +52,9 @@ h1 {
 
 .custom-link {
     text-decoration: none;
+    color: #669bbc;
+    font-weight: bold;
+
 }
 
 .text-muted{
@@ -62,10 +65,9 @@ h1 {
 
 /* Clase personalizada para el texto */
 .text-with-margin {
-    margin-right: 10px; /* Ajusta el valor según la separación deseada */
+    margin-right: 10px;
 }
 
-/* CSS personalizado */
 .input-group {
     position: relative;
     display: flex;
@@ -73,7 +75,8 @@ h1 {
 }
 
 .form-control {
-    height: 50px; /* Altura deseada */
+    height: 50px;
+
 }
 
 .form-control-icon::placeholder {
@@ -82,15 +85,23 @@ h1 {
 
 .fa-search {
     position: absolute;
-    left: 10px; /* Ajusta el espaciado desde la derecha según tu preferencia */
-    color: #6c757d; /* Cambia el color del icono según tus preferencias */
+    left: 10px;
+    color: #6c757d;
     cursor: pointer;
 }
 
-/* Para ajustar el espaciado entre el ícono y el borde derecho del campo de entrada */
+.custom-select-height {
+    height: 50px;
+}
 
+.custom-button{
+    color: #669bbc;
+    font-weight: bold;
+    background: none !important;
+    border: none !important;
 
-/* Agregar margen izquierdo al placeholder */
+}
+
 
 
 
